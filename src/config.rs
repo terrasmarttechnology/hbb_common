@@ -85,7 +85,17 @@ lazy_static::lazy_static! {
         ("enable-check-update".to_owned(), "N".to_owned()),
         ("show-scam-warning".to_owned(), "N".to_owned()),
     ]));
-    pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
+    // TerraSmart Destek: the permanent password tablets start with, given to the build
+    // as its salted hash ("00" + base64(sha256(password + salt))), never as plain text.
+    pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = RwLock::new(
+        match (option_env!("TERRASMART_PRESET_PASSWORD_HASH"), option_env!("TERRASMART_PRESET_PASSWORD_SALT")) {
+            (Some(hash), Some(salt)) if !hash.is_empty() && !salt.is_empty() => HashMap::from([
+                ("password".to_owned(), hash.to_owned()),
+                ("salt".to_owned(), salt.to_owned()),
+            ]),
+            _ => HashMap::new(),
+        }
+    );
     pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
 }
 
