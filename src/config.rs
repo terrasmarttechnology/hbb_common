@@ -78,7 +78,13 @@ lazy_static::lazy_static! {
     pub static ref DEFAULT_DISPLAY_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref OVERWRITE_DISPLAY_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref DEFAULT_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
-    pub static ref OVERWRITE_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
+    // TerraSmart Destek: updates come only through TerraSmart's MDM, so the
+    // update check (and its "Download new version" banner) is off, and the
+    // first-start scam warning is not shown on managed tablets.
+    pub static ref OVERWRITE_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = RwLock::new(HashMap::from([
+        ("enable-check-update".to_owned(), "N".to_owned()),
+        ("show-scam-warning".to_owned(), "N".to_owned()),
+    ]));
     pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
 }
@@ -114,8 +120,9 @@ const CHARS: &[char] = &[
     'm', 'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
 ];
 
-pub const RENDEZVOUS_SERVERS: &[&str] = &["rs-ny.rustdesk.com"];
-pub const RS_PUB_KEY: &str = "OeVuKk5nlHiXp+APNn0Y3pC1Iwpwn44JGqrQCsWqmBw=";
+// TerraSmart Destek: the tablets reach TerraSmart's own ID/relay server.
+pub const RENDEZVOUS_SERVERS: &[&str] = &["rustdesk.terrasmart.com.tr"];
+pub const RS_PUB_KEY: &str = "xNMwCMs+XBNCvz1yddBXqayEt7FTq3HMtXMERQ61pDk=";
 
 pub const RENDEZVOUS_PORT: i32 = 21116;
 pub const RELAY_PORT: i32 = 21117;
