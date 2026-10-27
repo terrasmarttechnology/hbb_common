@@ -77,7 +77,11 @@ lazy_static::lazy_static! {
     pub static ref OVERWRITE_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref DEFAULT_DISPLAY_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref OVERWRITE_DISPLAY_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
-    pub static ref DEFAULT_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
+    // TerraSmart Destek: no floating window, so the app never asks for "display over
+    // other apps", which Headwind cannot grant, and nothing floats over Vera.
+    pub static ref DEFAULT_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = RwLock::new(HashMap::from([
+        ("disable-floating-window".to_owned(), "Y".to_owned()),
+    ]));
     // TerraSmart Destek: updates come only through TerraSmart's MDM, so the
     // update check (and its "Download new version" banner) is off, and the
     // first-start scam warning is not shown on managed tablets.
